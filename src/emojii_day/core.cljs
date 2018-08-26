@@ -3,6 +3,7 @@
             [emojii-day.emoji-data :as data]
             [emojii-day.validate :as validate]))
 
+
 (enable-console-print!)
 
 (defn e-target-value [f & args]
@@ -24,38 +25,39 @@
 ;;  Components
 
 (defn emoji-img [emoji]
-  [:img {:src (emoji data/emoji) :class "emoji-img" :width 32 :height 32}])
+  [:img {:src (data/get-emoji emoji) :class "emoji-img" :width 32}])
 
 (defn emoji-count [count]
-  (if (< 0 count)
-    [:b (str count "x")]
-    [:noscript]))
+  (if (<= 0 count)
+    [:b (str count " ×")]
+    nil))
 
 (defn day-count [valid n emoji]
     [:span
      [:h4 (if valid "Valid! " "Invalid! ")
       [emoji-count n]
       " "
-      (if (validate/weekday? emoji)
-          [emoji-img emoji])]])
+      [emoji-img (if validate/weekday? emoji :unknown)]]])
 
-(defn ui-report [{:keys [valid match-day actual-day count is-empty ]}]
+(defn ui-report [{:keys [valid match-day actual-day count is-empty trying-weekend is-empty ]}]
   [:div {:id "emoji-report"}
    [:p
     (cond
       is-empty [:span "Nothing to validate "]
+      trying-weekend [:span "No. Just no. We don't do weekends"]
+      is-empty [:span "Nothing to validate"]
       :else [day-count valid count match-day])
       [:p (if (and
                (validate/weekday? match-day)
                (not= match-day actual-day))
             [:span {:class "hint"}
-          "(Even though today is " [:b {:class "no-hint"} (validate/to-weekday-str actual-day)] " )"])]]])
+          "(Even though today is " [:b {:class "no-hint"} (validate/to-day-str actual-day)] " )"])]]])
 
 (defn ui-header []
   [:header {:id "emoji-header"}
    [:h2 [emoji-img :friday] "Today's emoji" [emoji-img :monday] [emoji-img :corgi]]])
 
-(defn emjoii-box []
+(defn emojii-box []
   [:div
    [ui-header]
    [:textarea
@@ -71,9 +73,15 @@
    [:h2 name]
    [:code (str state)]])
 
+(defn initial-emojii-box []
+  (validate-text "")
+  emojii-box)
+
 (defn root []
   [:div
-   [emjoii-box]])
+   [initial-emojii-box]
+   [inside-state @app-state]])
+
 
 (r/render-component [root]
                     (. js/document (getElementById "app")))
