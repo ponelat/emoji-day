@@ -1,0 +1,58 @@
+/* some style */
+
+
+html,body {
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 13px;
+  color: #444;
+}
+
+h1,h2,h3,h4,h5,h6 {
+}
+
+h1,h2,h3 {
+  font-size: 2em;
+}
+
+h4,h5,h6 {
+  font-size: 1.3em;
+}
+
+/* Custom styles */
+.emoji-img {
+  vertical-align: sub;
+}
+
+.hint {
+  color: #aaa;
+}
+
+.no-hint {
+  color: #444;
+}
+
+/* Styles for layout */
+
+#app {
+  width: 40%;
+  margin: auto;
+}
+
+#emoji-header {
+  padding: 5px;
+}
+
+#paste-box {
+  border: 5px solid #f0f0f0;
+  position: relative;
+  width: 100%;
+}
+
+#emoji-report {
+  font-size: 1.5em;
+  text-align: center;
+}
+
+#footer {
+  text-align: center;
+}
