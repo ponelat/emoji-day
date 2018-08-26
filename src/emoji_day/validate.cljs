@@ -79,7 +79,8 @@
 (defn str-is-most-likely-day [s]
   false)
 
-(def first-day-match (re-pattern (str ".*?(" (s/join "|" days) ":).*")))
+(def first-day-match (re-pattern (str ".*?(" (s/join "|" days) "):.*")))
+
 (defn day-to-emoji [string]
   (if (string? string)
     (keyword

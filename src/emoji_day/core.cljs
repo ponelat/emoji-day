@@ -79,7 +79,10 @@
 
 (defn root []
   [:div
-   [initial-emoji-box]])
+   [initial-emoji-box]
+   [:footer {:id "footer"}
+    [:a {:href "https://github.com/ponelat/emoji-day" :target "_blank"}
+     "https://github.com/ponelat/emoji-day"]]])
 
 
 (r/render-component [root]
