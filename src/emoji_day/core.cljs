@@ -1,8 +1,7 @@
-(ns ^:figwheel-hooks emojii-day.core
+(ns ^:figwheel-hooks emoji-day.core
   (:require [reagent.core :as r ]
-            [emojii-day.emoji-data :as data]
-            [emojii-day.validate :as validate]))
-
+            [emoji-day.emoji-data :as data]
+            [emoji-day.validate :as validate]))
 
 (enable-console-print!)
 
@@ -18,12 +17,12 @@
 (defn validate-text [string]
   (swap! report-state #(validate/validate-report string)))
 
+
 (defn update-text [text]
     (swap! app-state assoc :text text)
     (validate-text text))
 
 ;;  Components
-
 (defn emoji-img [emoji]
   [:img {:src (data/get-emoji emoji) :class "emoji-img" :width 32}])
 
@@ -32,21 +31,22 @@
     [:b (str count " ×")]
     nil))
 
-(defn day-count [valid n emoji]
+(defn day-count [valid n emoji just-dirty]
     [:span
-     [:h4 (if valid "Valid! " "Invalid! ")
+     [:h4 (str (if valid "Valid!" "Invalid!") (if just-dirty "* " " "))
       [emoji-count n]
       " "
       [emoji-img (if validate/weekday? emoji :unknown)]]])
 
-(defn ui-report [{:keys [valid match-day actual-day count is-empty trying-weekend is-empty ]}]
+(defn ui-report [{:keys [valid match-day actual-day count is-empty trying-weekend is-empty just-dirty ]}]
   [:div {:id "emoji-report"}
    [:p
     (cond
       is-empty [:span "Nothing to validate "]
       trying-weekend [:span "No. Just no. We don't do weekends"]
       is-empty [:span "Nothing to validate"]
-      :else [day-count valid count match-day])
+      :else [day-count valid count match-day just-dirty])
+    (if just-dirty "( Dirty string* )" nil)
       [:p (if (and
                (validate/weekday? match-day)
                (not= match-day actual-day))
@@ -57,7 +57,7 @@
   [:header {:id "emoji-header"}
    [:h2 [emoji-img :friday] "Today's emoji" [emoji-img :monday] [emoji-img :corgi]]])
 
-(defn emojii-box []
+(defn emoji-box []
   [:div
    [ui-header]
    [:textarea
@@ -73,14 +73,13 @@
    [:h2 name]
    [:code (str state)]])
 
-(defn initial-emojii-box []
+(defn initial-emoji-box []
   (validate-text "")
-  emojii-box)
+  emoji-box)
 
 (defn root []
   [:div
-   [initial-emojii-box]
-   [inside-state @app-state]])
+   [initial-emoji-box]])
 
 
 (r/render-component [root]

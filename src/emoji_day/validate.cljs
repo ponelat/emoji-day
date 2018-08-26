@@ -1,4 +1,4 @@
-(ns emojii-day.validate
+(ns emoji-day.validate
   (:require [clojure.string :as s]))
 
 (def days [:sunday :monday :tuesday :wednesday :thursday :friday :saturday])
@@ -66,15 +66,12 @@
       :friday (power-of-2? n)
       false))
 
-(defn emoji-valid-str? [emoji s]
-  (and (->> s
-            (count-emoji emoji)
-            (emoji-valid-count? emoji))
-       (->> s
-            (remove-emoji emoji)
-            (s/trim)
-            (count)
-            (= 0))))
+(defn emoji-string-clean? [emoji s]
+  (->> s
+       (remove-emoji emoji)
+       (s/trim)
+       (count)
+       (= 0)))
 
 (defn get-day []
   (nth days (.getDay (new js/Date))))
@@ -101,12 +98,24 @@
    :has-extra-text false
    :has-extra-emoji false})
 
-(defn validate-report [string]
+(defn validate-report-base [string]
   (let [match-day (find-first-day-emoji string)]
     {:match-day match-day
      :actual-day (get-day)
-     :valid (emoji-valid-str? match-day string)
      :count (count-emoji match-day string)
      :trying-weekend (weekend? match-day)
      :is-empty (empty? string)
      }))
+
+(defn validate-report [string]
+  (let* [report (validate-report-base string)
+         valid-count (emoji-valid-count?
+                      (:match-day report)
+                      (:count report))
+         is-clean (emoji-string-clean? (:match-day report) string)
+         valid (and is-clean valid-count)]
+    (assoc report
+           :valid-count valid-count
+           :is-clean is-clean
+           :just-dirty (and (not is-clean) valid-count)
+           :valid valid)))

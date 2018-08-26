@@ -1,4 +1,4 @@
-(defproject emojii-day "0.1.0-SNAPSHOT"
+(defproject emoji-day "0.1.0-SNAPSHOT"
   :description "FIXME: write this!"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -21,4 +21,3 @@
                    :resource-paths ["resources" "target"]
                    ;; need to add the compliled assets to the :clean-targets
                    :clean-targets ^{:protect false} ["target/public" :target-path]}})
-

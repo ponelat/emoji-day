@@ -1,4 +1,4 @@
-# emojii-day
+# emoji-day
 
 FIXME: Write a one-line description of your library/project.
 
